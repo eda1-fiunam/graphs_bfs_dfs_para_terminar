@@ -84,7 +84,7 @@ typedef struct Node_
 typedef struct
 {
    int key;      ///< campo de indexado. En este ejemplo Data.val
-   size_t value; ///< índice del elemento en la tabla de datos
+   size_t index; ///< índice del elemento en la tabla de datos
 } Pair;
 
 /**
@@ -92,7 +92,7 @@ typedef struct
  */
 typedef struct
 {
-   Pair  kv;        ///< Par <key, value>: <Data.val, index (a la tabla de datos)>
+   Pair  kv;        ///< Par <key, index>: <Data.val, index (a la tabla de datos)>
    Node* neighbors; ///< apunta al primer vecino, ¡no debe perderse!
    Node* cursor;    ///< Nodo de movimiento libre (freewheel pointer)
 
@@ -187,24 +187,18 @@ bool Vertex_End( const Vertex* v )
 
 void Vertex_SetColor( Vertex* v, eGraphColors color )
 {
-   assert( color == BLACK || color == GRAY || color == WHITE );
-
-   v->color = color;
 }
 
 eGraphColors Vertex_GetColor( Vertex* v )
 {
-   return v->color;
 }
 
 void Vertex_SetDistance( Vertex* v, int distance )
 {
-   v->distance = distance;
 }
 
 int Vertex_GetDistance( Vertex* v )
 {
-   return v->distance;
 }
 
 /**
@@ -216,22 +210,18 @@ int Vertex_GetDistance( Vertex* v )
  */
 void Vertex_SetPredecessor( Vertex* v, int predecessor_idx )
 {
-   v->predecessor = predecessor_idx; 
 }
 
 int Vertex_GetPredecessor( Vertex* v )
 {
-   return v->predecessor;
 }
 
 void Vertex_SetDiscovery_time( Vertex* v, size_t time )
 {
-   v->discovery_time = time;
 }
 
 void Vertex_SetFinished_time( Vertex* v, size_t time )
 {
-   v->finish_time = time;
 }
 
 /**
@@ -255,7 +245,7 @@ int Vertex_GetKey( Vertex* v )
  */
 size_t Vertex_GetDataIndex( Vertex* v )
 {
-   return v->kv.value;
+   return v->kv.index;
 }
 
 
@@ -325,7 +315,7 @@ Graph* Graph_New( size_t size, eGraphType type )
 
          for( size_t i = 0; i < g->size; ++i ){
             vertices[ i ].kv.key = 0;
-            vertices[ i ].kv.value = 0;
+            vertices[ i ].kv.index = 0;
             vertices[ i ].neighbors = NULL;
          }
       } 
@@ -387,7 +377,7 @@ void Graph_Print( Graph* g, int depth )
       // para simplificar la notación. 
 
       printf( "\n=== Vertex[ %ld ] ===\n", i );
-      printf( "<%d, %ld>\n", vertex->kv.key, vertex->kv.value );
+      printf( "<%d, %ld>\n", vertex->kv.key, vertex->kv.index );
 
       // LEVEL 0:
       printf( vertex->neighbors ? "Has neighbors\n" : "Has no neighbors\n" );
@@ -428,7 +418,7 @@ void Graph_AddVertex( Graph* g, int key, size_t index )
    // para simplificar la notación 
 
    vertex->kv.key     = key;
-   vertex->kv.value   = index;
+   vertex->kv.index   = index;
    vertex->neighbors = NULL;
 
    ++g->len;
