@@ -691,12 +691,10 @@ void bfs( Graph* g, Vertex* start )
       printf( "PROCESSING VERTEX WITH INDEX %ld AND KEY: %d\n", v_idx, Vertex_GetKey( v ) );
 
 
-      Vertex* w = NULL;
-
       // para todos los vecinos w de v:
       for( Vertex_Start( v ); !Vertex_End( v ); Vertex_Next( v ) )
       {
-         w = Graph_GetVertexByIndex( g, Vertex_Get( v ) );
+         Vertex* w = Graph_GetVertexByIndex( g, Vertex_Get( v ) );
 
          if( Vertex_GetColor( w ) == BLACK )
          {
@@ -708,7 +706,7 @@ void bfs( Graph* g, Vertex* start )
          }
       }
 
-      Vertex_SetColor( w, WHITE );
+      Vertex_SetColor( v, WHITE );
    }
 }
 
@@ -728,21 +726,31 @@ static void dfs_recursive_non_topol(
 
    Vertex_SetColor( v, GRAY );
 
-   for( Vertex_Start( v ); !Vertex_End( v ); Vertex_Next( v ) ) {
    // recorremos la lista de vecinos:
-
+   for( Vertex_Start( v ); !Vertex_End( v ); Vertex_Next( v ) )
+   {
       size_t v_as_idx = Vertex_Get( v );
       Vertex* w = Graph_GetVertexByIndex( g, v_as_idx );
 
-      dfs_recursive_non_topol( g, w );
+      if( Vertex_GetColor( w ) == BLACK )
+      {
+         printf( "Visiting: %ld\n", v_as_idx );
+
+         Vertex_SetPredecessor( w, Graph_GetIndexFromVertex( g, v ) );
+
+         dfs_recursive_non_topol( g, w );
+      }
    }
+   
+   Vertex_SetColor( v, WHITE );
 }
 
 bool dfs( Graph* g, int key )
 {
    
    // recorre de forma lineal la lista de vértices para limpiarla
-   for( size_t i = 0; i < g->len; ++i ){
+   for( size_t i = 0; i < g->len; ++i )
+   {
 
       Vertex* vertex = Graph_GetVertexByIndex( g, i );
 
